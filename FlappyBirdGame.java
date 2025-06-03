@@ -114,8 +114,7 @@ public class FlappyBirdGame extends JPanel implements ActionListener, KeyListene
     void placePipe() {
         int gap = 150;
         int pipeTopY = -random.nextInt(200); // Less extreme Y
-        int pipeBottomY = pipeTopY + 320 + gap; // Use new pipe height (320)
-
+        int pipeBottomY = pipeTopY + 320 + gap;
 
         pipes.add(new Pipe(topPipeImg, boardWidth, pipeTopY));
         pipes.add(new Pipe(bottomPipeImg, boardWidth, pipeBottomY));
@@ -131,12 +130,24 @@ public class FlappyBirdGame extends JPanel implements ActionListener, KeyListene
         repaint();
     }
 
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(backgroundImg, 0, 0, boardWidth, boardHeight, null);
 
         for (Pipe pipe : pipes) {
-            g.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height, null);
+            if (pipe.y < 0) {
+                // Draw top pipe flipped vertically
+                g.drawImage(pipe.img,
+                        pipe.x, pipe.y + pipe.height,
+                        pipe.x + pipe.width, pipe.y,
+                        0, 0,
+                        pipe.img.getWidth(null), pipe.img.getHeight(null),
+                        null);
+            } else {
+                // Draw bottom pipe normally
+                g.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height, null);
+            }
         }
 
         g.drawImage(baseImg, 0, 630, boardWidth, 70, null);
